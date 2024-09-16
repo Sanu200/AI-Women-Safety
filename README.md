@@ -1,4 +1,4 @@
-#The Prerequistes Used here
+# Technologies Used Here
 
 YOLOv3 (You Only Look Once): Used for real-time object detection, specifically for detecting persons in the video feed.
 
