@@ -1,4 +1,4 @@
-#For The Currentv State of the project we require this to run this smoothly
+#For The Currentv State of the project we require these to run this smoothly
 
 opencv-python==4.10.0
 numpy==1.24.3
