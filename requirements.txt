@@ -6,5 +6,5 @@ tensorflow==2.14.0
 playsound==1.2.2
 
 
-#To install the packages by runningpip install 
--r requirements.txt
+#To install the packages by running
+pip install -r requirements.txt
