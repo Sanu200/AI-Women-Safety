@@ -7,7 +7,7 @@ from email import encoders
 import os
 from .config import SENDER_EMAIL, PASSWORD, RECEIVER_EMAIL
 
-def send_email(subject, body, attachment_dir):
+def send_email(subject, body, attachment_path):
     # Use credentials from config.py
     sender_email = SENDER_EMAIL
     password = PASSWORD
@@ -22,16 +22,14 @@ def send_email(subject, body, attachment_dir):
     # Attach the email body
     msg.attach(MIMEText(body, 'plain'))
 
-    # Attach the video file from the directory
-    for filename in os.listdir(attachment_dir):
-        file_path = os.path.join(attachment_dir, filename)
-        if os.path.isfile(file_path):
-            part = MIMEBase('application', 'octet-stream')
-            with open(file_path, 'rb') as attachment:
-                part.set_payload(attachment.read())
-            encoders.encode_base64(part)
-            part.add_header('Content-Disposition', f'attachment; filename={filename}')
-            msg.attach(part)
+    # Attach the video file
+    if os.path.isfile(attachment_path):
+        part = MIMEBase('application', 'octet-stream')
+        with open(attachment_path, 'rb') as attachment:
+            part.set_payload(attachment.read())
+        encoders.encode_base64(part)
+        part.add_header('Content-Disposition', f'attachment; filename={os.path.basename(attachment_path)}')
+        msg.attach(part)
 
     # Connect to the SMTP server
     server = smtplib.SMTP('smtp.gmail.com', 587)
