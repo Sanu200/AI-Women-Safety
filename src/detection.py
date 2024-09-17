@@ -22,7 +22,6 @@ def load_gender_model():
 # Detect people using YOLO and classify gender using the gender model
 def detect_people_and_classify_gender(frame, yolo_net, gender_model, conf_threshold=0.5, nms_threshold=0.4):
     height, width = frame.shape[:2]
-    # YOLO input size
     input_size = (416, 416)
     
     # Create a blob from the frame
@@ -39,7 +38,6 @@ def detect_people_and_classify_gender(frame, yolo_net, gender_model, conf_thresh
     boxes = []
     confidences = []
     class_ids = []
-
 
     for output in detections:
         for detection in output:
@@ -60,11 +58,9 @@ def detect_people_and_classify_gender(frame, yolo_net, gender_model, conf_thresh
     # Apply non-maximum suppression to eliminate redundant overlapping boxes
     indices = cv2.dnn.NMSBoxes(boxes, confidences, conf_threshold, nms_threshold)
 
-    # Lists to store detected people and their gender classifications
     people = []
     genders = []
 
-    # Handle both cases where indices might be a scalar or a list
     if len(indices) > 0:
         if isinstance(indices[0], list):  # When indices is a list of lists
             indices = [i[0] for i in indices]
@@ -76,17 +72,16 @@ def detect_people_and_classify_gender(frame, yolo_net, gender_model, conf_thresh
         # Crop the region of interest (ROI) for gender classification
         roi = frame[y:y + h, x:x + w]
         if roi.size > 0:
-                # Resize the ROI to the size expected by the gender model (e.g., 96x96) and preprocess
-                roi_resized = cv2.resize(roi, (96, 96))
-                roi_array = img_to_array(roi_resized)
-                roi_array = np.expand_dims(roi_array, axis=0)
-                roi_array /= 255.0  # Normalize the image
+            roi_resized = cv2.resize(roi, (96, 96))
+            roi_array = img_to_array(roi_resized)
+            roi_array = np.expand_dims(roi_array, axis=0)
+            roi_array /= 255.0  # Normalize the image
 
-                # Use the gender model's predict method
-                gender_preds = gender_model.predict(roi_array)
+            # Use the gender model's predict method
+            gender_preds = gender_model.predict(roi_array)
 
-                # Interpret the gender prediction
-                gender = "man" if gender_preds[0][0] > gender_preds[0][1] else "woman"
-                genders.append(gender)
+            # Interpret the gender prediction
+            gender = "man" if gender_preds[0][0] > gender_preds[0][1] else "woman"
+            genders.append(gender)
 
     return people, genders
