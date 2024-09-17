@@ -33,26 +33,27 @@ def main():
         # Draw bounding boxes and gender labels on the frame
         for idx, (x, y, w, h) in enumerate(people):
             label = genders[idx] if idx < len(genders) else 'unknown'  # Gender of the detected person
-            color = (255, 0, 0) if label == 'Man' else (0, 255, 0)  # Blue for male, green for female
+            color = (255, 0, 0) if label == 'man' else (0, 255, 0)  # Blue for male, green for female
             
             # Draw rectangle and put label on the frame
             cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
             cv2.putText(frame, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color, 2)
 
         # Trigger the alarm and save the video if conditions are met
-        if len(people) > 1 and 'Man' in genders and 'Woman' in genders:
-            if not alarm_triggered:
-                alarm_triggered = True
-                recording_start_time = time.time()
+        if 'man' in genders and 'woman' in genders and not alarm_triggered:
+            # Alarm and email should be triggered when both a man and woman are detected
+            alarm_triggered = True
+            recording_start_time = time.time()
 
-                # Trigger the alarm sound
-                trigger_alarm()
+            # Trigger the alarm sound
+            trigger_alarm()
 
-                # Save 10-second video clip
-                save_video_clip(video_capture, "saved_clips/", duration=10)
+            # Save 10-second video clip
+            video_path = save_video_clip(video_capture, duration=10)  # Save from video capture
 
-                # Send email to authorities with video clip
-                send_email("EMAIL_RECEIVER", "Alarm Triggered", "Video clip attached.", "saved_clips/")
+
+            # Send email to authorities with video clip
+            send_email("Alarm Triggered", "Video clip attached.", video_path)
 
         # Calculate and display FPS
         cTime = time.time()
