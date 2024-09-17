@@ -1,0 +1,10 @@
+#For The Currentv State of the project we require this to run this smoothly
+
+opencv-python==4.10.0
+numpy==1.24.3
+tensorflow==2.14.0
+playsound==1.2.2
+
+
+#To install the packages by runningpip install 
+-r requirements.txt
